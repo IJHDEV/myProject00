@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig"><!-- 
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/> -->
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/><!-- 
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"/> --><!-- 
+		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"/> -->
+		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@218.50.128.246:11521:xe"/>
+		<property name="username" value="book_ex"/>
+		<property name="password" value="book_ex"/>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"/>
+	</bean>
+	
+<!-- 	
+	<context:property-placeholder location="classpath:properties/jdbc/myjdbc.properties"/>
+	
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="${jdbcHikari.driverClassName}"/>
+		<property name="jdbcUrl" value="${jdbcHikari.jdbcUrl}"/>
+		<property name="username" value="${jdbcHikari.username}"/>
+		<property name="password" value="${jdbcHikari.password}"/>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"/>
+	</bean> -->
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:com/spring5/mypro00/mapper/MyBoardMapper.xml</value> 
+				<value>classpath:com/spring5/mypro00/mapper/MyReplyMapper.xml</value> 
+				<value>classpath:com/spring5/mypro00/mapper/MyBoardAttachFileMapper.xml</value> 
+				<value>classpath:com/spring5/mypro00/mapper/MyScheduledMapper.xml</value>
+				<value>classpath:com/spring5/mypro00/mapper/MyMemberMapper.xml</value><!--
+				<value>classpath:mappers/BoardMapper.xml</value> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.spring5.mypro00.mapper" template-ref="sqlSession"/>
+	
+	<!-- @Transactional 어노테이션 기능 활성화(스프링 트랜잭션 기능 활성화) -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	
+	<!-- MyBoardDAO를 사용할 경우: 생성자 주입 --><!-- 
+	<bean id="myBoardDAO" class="com.spring5.mypro00.dao.MyBoardDAO"> 
+		<constructor-arg index="0" ref="sqlSession"/>
+	</bean> -->
+	
+	<!-- MyBoardDAO를 사용할 경우: Setter방식 주입 --><!-- 
+	<bean id="myBoardDAO" class="com.spring5.mypro00.dao.MyBoardDAO"> 
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean> -->
+	<!-- 
+	<context:component-scan base-package="com.spring5.mypro00.dao"/> -->
+	
+	
+	<!-- 
+	<bean id="hikariConfigHR" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"/>
+		<property name="username" value="hr"/>
+		<property name="password" value="oracle4U"/>	
+	</bean>
+	
+	<bean id="dataSourceHR" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfigHR"/>
+	</bean>
+	
+	<bean id="sqlSessionFactoryHR" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceHR"/>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:mappers/EmpMapper.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionHR" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryHR"/>
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.spring5.mypro00.mapperhr" template-ref="sqlSessionHR"/>
+	
+	<tx:annotation-driven transaction-manager="txManagerHR"/>
+	
+	<bean id="txManagerHR" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceHR"/>
+	</bean> -->
+	
+	
+		
+</beans>

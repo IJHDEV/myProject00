@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.4.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<!-- @Controller 어노테이션의 컨트롤러 기능 활성화(MVC2 모델(Spring MVC모델)) -->
+	<annotation-driven />
+
+	<!-- Enables the Spring AOP -->
+	<aop:aspectj-autoproxy/>
+
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	<!-- 
+	<context:component-scan base-package="com.spring5.mypro00" /> --><!-- 
+	<context:component-scan base-package="sample.chap02"/> --><!-- 
+	<context:component-scan base-package="sample.chap04.controller"/> --><!-- 
+	<context:component-scan base-package="sample.chap04.exception"/> --><!-- 
+	<context:component-scan base-package="sample.chap18.aop"/> --><!-- 
+	<context:component-scan base-package="sample.chap18.service"/> -->
+	
+	<!-- Servlet-based MultipartResolver implementation for Apache Commons FileUpload 1.2 or above.  --><!-- 
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="defaultEncoding" value="utf-8"/>
+		<beans:property name="maxUploadSize" value="104857560"/>
+		<beans:property name="maxUploadSizePerFile" value="2097152"/>
+		<beans:property name="uploadTempDir" value="file:/C:/myupload/temp"/>
+		<beans:property name="maxInMemorySize" value="20971520"/>
+	</beans:bean> -->
+	
+	<!-- @Service 어노테이션이 명시된 클래스의 패키지를 설정 -->
+	<context:component-scan base-package="com.spring5.mypro00.service"/>
+	<context:component-scan base-package="com.spring5.mypro00.controller"/>
+	<!-- bean태그로 설정하지 않아도 자동으로 @Service, @Controller, @RestController 어노테이션이 설정된 클래스의 빈 생성-->
+	<!-- DAO 클래스: @Repository -->
+	<!-- 컨트롤러/서비스/DAO가 아닌 다른 클래스들은 @Component -->
+	
+		
+	<!-- MultiPart Upload 구성을 위한 빈 설정 -->
+	<context:component-scan base-package="com.spring5.mypro00.common.fileupload"/>
+	<context:component-scan base-package="com.spring5.mypro00.common.filedownload"/>
+	
+	<beans:bean id="multipartResolver" 
+				class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</beans:bean>
+	
+	
+	<!-- 스프링 Scheduler 관련 설정(Spring Batch) -->
+	<context:component-scan base-package="com.spring5.mypro00.common.task"/>
+	
+	<task:scheduler id="myClearFilesScheduler" pool-size="10"/>
+	<task:annotation-driven scheduler="myClearFilesScheduler"/>
+	
+	
+	<!-- Spring Security 관련 설정-->
+	<context:component-scan base-package="com.spring5.mypro00.common.security"/>
+	
+	<security:global-method-security pre-post-annotations="enabled" 
+									 secured-annotations="enabled"/>
+	
+	
+	
+	
+	
+</beans:beans>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyBoardDAOMapper">
+	
+	<select id="selectDAOMyBoardList" resultType="com.spring5.mypro00.domain.MyBoardVO">
+		SELECT bno, btitle, bcontent, bwriter, 
+			   bregdate, bmoddate, bviewsCnt, breplyCnt, bdelFlag
+		FROM book_ex.tbl_myboard
+	</select>
+	
+	<select id="selectDAOMyBoard" resultType="com.spring5.mypro00.domain.MyBoardVO">
+		SELECT bno, btitle, bcontent, bwriter, 
+			   bregdate, bmoddate, bviewsCnt, breplyCnt, bdelFlag
+		FROM book_ex.tbl_myboard
+		WHERE bno = #{bno}
+	</select>
+	
+	<insert id="insertDAOMyBoard" parameterType="com.spring5.mypro00.domain.MyBoardVO">
+		INSERT INTO book_ex.tbl_myboard
+		VALUES (book_ex.seq_myboard.nextval,
+        		#{btitle}, #{bcontent}, #{bwriter},
+        		DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
+	</insert>
+	
+</mapper>

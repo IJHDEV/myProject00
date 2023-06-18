@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring5.mypro00.mapper.MyScheduledMapper">
+	
+	<!-- 불필요한 첨부파일 정보 조회 -->
+	<select id="selectAttachFilesBerforeOneDay1" 
+			resultType="com.spring5.mypro00.domain.MyBoardAttachFileVO">
+	<![CDATA[
+		SELECT uuid, uploadpath, filename, filetype, bno
+		FROM book_ex.tbl_myAttachFiles
+		WHERE uploadpath <= TO_CHAR((sysdate-1), 'YYYY/MM/DD')
+	]]>
+	</select>
+
+
+	<select id="selectAttachFilesBerforeOneDay2" 
+			resultType="com.spring5.mypro00.domain.MyBoardAttachFileVO">
+	<![CDATA[
+		SELECT uuid, uploadpath, filename, filetype, bno
+		FROM book_ex.tbl_myAttachFiles
+		WHERE uploadpath <= TO_CHAR((sysdate-1), 'YYYY/MM/DD') 
+		  AND uploadpath > TO_CHAR((sysdate-2), 'YYYY/MM/DD')
+	]]>
+	</select>
+	
+	
+	<select id="selectDirs" resultType="String">
+	<![CDATA[
+		SELECT DISTINCT uploadPath FROM book_ex.tbl_myAttachFiles
+		WHERE uploadpath <= TO_CHAR((sysdate-1), 'YYYY/MM/DD')
+	]]>
+	</select>
+
+</mapper>

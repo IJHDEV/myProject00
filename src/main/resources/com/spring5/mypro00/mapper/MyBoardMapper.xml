@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring5.mypro00.mapper.MyBoardMapper">
+	
+	<!-- 게시물 목록: 페이징 없음 --><!-- 
+	<select id="selectMyBoardList" resultType="com.spring5.mypro00.domain.MyBoardVO">
+		SELECT bno, btitle, bcontent, bwriter, 
+			   bregdate, bmoddate, bviewsCnt, breplyCnt, bdelFlag
+		FROM book_ex.tbl_myboard
+	</select> -->
+	
+	<!-- 게시물 목록: 페이징 고려 -->
+	<select id="selectMyBoardList" resultType="com.spring5.mypro00.domain.MyBoardVO" 
+			parameterType="com.spring5.mypro00.common.paging.domain.MyBoardPagingDTO">
+		<![CDATA[  	
+			SELECT rn, bno, btitle, bcontent, bwriter, 
+				   bregdate, bmoddate, bviewsCnt, breplyCnt, bdelFlag
+			FROM (SELECT /*+ INDEX_DESC(a PK_MYBOARD) */ rownum rn, a.*
+			      FROM book_ex.tbl_myboard a
+			      WHERE 
+		]]> 
+		<trim prefix="(" suffix=") AND" prefixOverrides="AND|OR"> <!-- forEach 끝나고 맨 앞 OR prefix를 OR 대신 ( 로 override -->
+			<foreach item='scope' collection="scopeArray">
+				<trim prefix="OR">
+					<choose>
+						<when test="scope == 'T'.toString()">btitle LIKE '%'||#{keyword}||'%'</when>
+						<when test="scope == 'C'.toString()">bcontent LIKE '%'||#{keyword}||'%'</when>
+						<when test="scope == 'W'.toString()">bwriter LIKE '%'||#{keyword}||'%'</when>
+					</choose>
+				</trim>
+				<if test="startDate != '' and endDate != ''"> <!-- 기간 검색 -->
+					<trim prefix="AND">
+						bregDate BETWEEN TO_DATE(#{startDate}) AND TO_DATE(#{endDate}) +1
+					</trim>
+				</if>
+			</foreach>
+		</trim>			      
+		<![CDATA[	      
+			      rownum <= (#{pageNum} * #{rowAmountPerPage}))
+			WHERE rn >= ((#{pageNum} * #{rowAmountPerPage}) - (#{rowAmountPerPage} - 1))
+		]]>
+	</select>
+	
+	
+	<!-- 게시물 총수: 페이징시 사용 -->
+	<select id="selectRowTotal" resultType="long"
+			parameterType="com.spring5.mypro00.common.paging.domain.MyBoardPagingDTO">
+		SELECT COUNT(*) rowTotal FROM book_ex.tbl_myboard
+		<where>
+			<trim prefix="(" suffix=")" prefixOverrides="OR"> <!-- forEach 끝나고 맨 앞 OR prefix를 OR 대신 ( 로 override -->
+				<foreach item='scope' collection="scopeArray">
+					<trim prefix="OR">
+						<choose>
+							<when test="scope == 'T'.toString()">btitle LIKE '%'||#{keyword}||'%'</when>
+							<when test="scope == 'C'.toString()">bcontent LIKE '%'||#{keyword}||'%'</when>
+							<when test="scope == 'W'.toString()">bwriter LIKE '%'||#{keyword}||'%'</when>
+						</choose>
+					</trim>
+				</foreach>
+			</trim>	
+		</where>
+	</select>
+	
+	
+	<!-- selectKey 이용X -->
+	<insert id="insertMyBoard" parameterType="com.spring5.mypro00.domain.MyBoardVO">
+		INSERT INTO book_ex.tbl_myboard
+		VALUES (book_ex.seq_myboard.nextval,
+        		#{btitle}, #{bcontent}, #{bwriter},
+        		DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
+	</insert>
+	
+	
+	<!-- selectKey 이용 -->
+	<insert id="insertMyBoardSelectKey" parameterType="com.spring5.mypro00.domain.MyBoardVO">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+			SELECT book_ex.seq_myboard.nextval FROM dual
+		</selectKey>
+		INSERT INTO book_ex.tbl_myboard
+		VALUES (#{bno},	#{btitle}, #{bcontent}, #{bwriter},
+        		DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
+	</insert>
+	
+	
+	<!-- 특정 게시물 조회-->
+	<!-- 
+ 	<select id="selectMyBoard" resultType="com.spring5.mypro00.domain.MyBoardVO">
+		SELECT bno, btitle, bcontent, bwriter, 
+			   bregdate, bmoddate, bviewsCnt, breplyCnt, bdelFlag
+		FROM book_ex.tbl_myboard
+		WHERE bno = #{bno}
+	</select> --> 
+	
+	
+	<!-- 특정 게시물 조회: 첨부파일 정보 포함 --><!-- 
+	<resultMap type="java.util.HashMap" id="boardAttachFileMap">
+		<result property="bno" column="bno"/>
+		<result property="btitle" column="btitle"/>
+		<result property="bcontent" column="bcontent"/>
+		<result property="bwriter" column="bwriter"/>
+		<result property="bviewsCnt" column="bviewsCnt"/>
+		<result property="breplyCnt" column="breplyCnt"/>
+		<result property="bdelFlag" column="bdelFlag"/>
+		<result property="bregDate" column="bregDate"/>
+		<result property="bmodDate" column="bmodDate"/>
+		<result property="uuid" column="uuid"/>
+		<result property="uploadPath" column="uploadPath"/>
+		<result property="fileName" column="fileName"/>
+		<result property="fileType" column="fileType"/>
+	</resultMap> --><!-- 
+	
+	<select id="selectMyBoard" resultMap="boardAttachFileMap">
+		SELECT a.bno, a.btitle, a.bcontent, a.bwriter, a.bregDate, a.bmodDate, a.bviewsCnt, 
+			   b.uuid, b.uploadPath, b.fileName, b.fileType
+		FROM book_ex.tbl_myboard a LEFT OUTER JOIN book_ex.tbl_myAttachFiles b
+			ON a.bno = b.bno
+		WHERE a.bno = #{bno}
+	</select> -->
+	
+	
+	<!-- 특정 게시물 조회(첨부파일 정보 포함): 기존 VO 이용 -->
+	<resultMap type="com.spring5.mypro00.domain.MyBoardAttachFileVO" id="attachFileMap">
+		<result property="uuid" column="uuid"/>
+		<result property="uploadPath" column="uploadPath"/>
+		<result property="fileName" column="fileName"/>
+		<result property="fileType" column="fileType"/>
+		<result property="bno" column="bno"/>
+	</resultMap>
+	
+	<resultMap type="com.spring5.mypro00.domain.MyBoardVO" id="boardMap">
+		<result property="bno" column="bno"/>
+		<result property="btitle" column="btitle"/>
+		<result property="bcontent" column="bcontent"/>
+		<result property="bwriter" column="bwriter"/>
+		<result property="bviewsCnt" column="bviewsCnt"/>
+		<result property="breplyCnt" column="breplyCnt"/>
+		<result property="bdelFlag" column="bdelFlag"/>
+		<result property="bregDate" column="bregDate"/>
+		<result property="bmodDate" column="bmodDate"/>
+		<collection property="attachFileList" resultMap="attachFileMap"/>
+	</resultMap>
+	
+	<select id="selectMyBoard" resultMap="boardMap">
+		SELECT a.bno, a.btitle, a.bcontent, a.bwriter, a.bregDate, a.bmodDate, a.bviewsCnt, 
+			   b.uuid, b.uploadPath, b.fileName, b.fileType
+		FROM book_ex.tbl_myboard a LEFT OUTER JOIN book_ex.tbl_myAttachFiles b
+			ON a.bno = b.bno
+		WHERE a.bno = #{bno}
+	</select>
+		
+	
+	<update id="updateMyBoard" parameterType="com.spring5.mypro00.domain.MyBoardVO">
+		UPDATE book_ex.tbl_myboard
+		SET btitle = #{btitle},
+		    bcontent = #{bcontent},
+		    bmoddate = DEFAULT
+		WHERE bno = #{bno}
+	</update>
+	
+	
+	<!-- 게시물의 bdelFlag = 1로 설정 -->
+	<update id="updateSetDelFlag" parameterType="long">
+		UPDATE book_ex.tbl_myboard
+		SET bdelflag = 1
+		WHERE bno = #{bno}
+	</update>
+	
+	
+	<!-- 게시물 실제 삭제 -->
+	<delete id="deleteMyBoard" parameterType="long">
+		DELETE FROM book_ex.tbl_myboard
+		WHERE bno = #{bno}
+	</delete>
+	
+	
+	<update id="updateBviewsCnt" parameterType="long">
+		UPDATE book_ex.tbl_myboard
+		SET bviewscnt = bviewscnt + 1
+		WHERE bno = #{bno}
+	</update>
+	
+	
+	<!-- 댓글 수 변경: 댓글추가 시에 amount에 1, 댓글삭제 시 amount에 -1 이 각각 전달됨 -->
+	<update id="updateBReplyCnt">
+		UPDATE book_ex.tbl_myboard
+		SET breplyCnt = breplyCnt + #{amount}
+		WHERE bno = #{bno}
+	</update>
+		
+	
+</mapper>
