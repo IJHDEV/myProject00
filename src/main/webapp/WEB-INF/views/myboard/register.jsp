@@ -207,6 +207,10 @@ function showUploadResult(uploadResult) {
 //file input 초기화
 var cloneFileInput = $(".uploadDiv").clone();
 
+var myCsrfHeaderName = "${_csrf.headerName}";
+var myCsrfTokenValue = "${_csrf.token}";
+
+
 
 //업로드 요청
 $(".uploadDiv").on("change", ".inputFile", function(){
@@ -235,6 +239,9 @@ $(".uploadDiv").on("change", ".inputFile", function(){
 		contentType: false, //contentType에 MIME type 지정하지 않음	
 		processData: false, //contentType에 설정된 형식으로 인코딩 처리하지 않음
 		dataType: "json",
+ 		beforeSend: function(xhr) {
+			xhr.setRequestHeader(myCsrfHeaderName, myCsrfTokenValue);
+		},
 		success: function(uploadResult){
 			console.log(uploadResult);
 			$(".uploadDiv").html(cloneFileInput.html());
@@ -256,6 +263,9 @@ $(".fileUploadResult ul").on("click", "li button", function(){
 		url: "${contextPath}/deleteFile",
 		data: {fileName: targetFileName, fileType: targetFileType},
 		dataType: "text",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader(myCsrfHeaderName, myCsrfTokenValue);
+		},
 		success: function(result) {
 			if (result == "S") {
 				alert("파일이 삭제되었습니다.");

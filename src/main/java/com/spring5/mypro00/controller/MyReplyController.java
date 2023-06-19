@@ -2,6 +2,7 @@ package com.spring5.mypro00.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -42,6 +43,7 @@ public class MyReplyController {
 	
 		
 	//게시물에 대한 댓글 등록(rno 반환): POST /replies/{bno}/new
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/{bno}/new",
 				 consumes = {"application/json; charset=utf-8"},
 				 produces = {"text/plain; charset=utf-8"})
@@ -55,6 +57,7 @@ public class MyReplyController {
 	
 	
 	//게시물에 대한 댓글의 답글 등록(rno 반환): POST /replies/{bno}/{prno}/new
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/{bno}/{prno}/new",
 				 consumes = {"application/json; charset=utf-8"},
 				 produces = {"text/plain; charset=utf-8"})
@@ -79,6 +82,7 @@ public class MyReplyController {
 	
 	
 	//게시물에 대한 특정 댓글 수정: PUT:PATCH /replies/{bno}/{rno}
+	@PreAuthorize("isAuthenticated() && principal.username == #myReply.rwriter")
 	@RequestMapping(value = "/{bno}/{rno}", 
 //					method = {RequestMethod.PUT, RequestMethod.PATCH},
 					method = {RequestMethod.PUT},
@@ -97,10 +101,12 @@ public class MyReplyController {
 	
 	
 	//게시물에 대한 특정 댓글 삭제: DELETE: /replies/{bno}/{rno}
+	@PreAuthorize("isAuthenticated()")
 	@DeleteMapping(value = "/{bno}/{rno}", 
 				   produces = "text/plain; charset=utf-8")
 	public ResponseEntity<String> removeReply(@PathVariable("bno") Long bno, 
-											  @PathVariable("rno") Long rno) {
+											  @PathVariable("rno") Long rno,
+											  @RequestBody MyReplyVO myReply) {
 		
 		return myReplyService.removeReply(bno, rno) == 1 
 				? new ResponseEntity<String>("ReplyRemoveSuccess", HttpStatus.OK)
@@ -109,10 +115,15 @@ public class MyReplyController {
 	
 	
 	//게시물의 특정 댓글 삭제 요청
-	@PatchMapping(value = "/{bno}/{rno}", 
+	@PreAuthorize("isAuthenticated() && principal.username == #myReply.rwriter")
+	@PatchMapping(value = "/{bno}/{rno}",
+				  consumes = "application/json; charset=utf-8",
 				  produces = "text/plain; charset=utf-8")
 	public ResponseEntity<String> modifyRdelFlagReply(@PathVariable("bno") Long bno, 
-													  @PathVariable("rno") Long rno) {
+													  @PathVariable("rno") Long rno,
+													  @RequestBody MyReplyVO myReply) {
+		
+		System.out.println("rwriter : " + myReply.getRwriter());
 		
 		return myReplyService.modifyRdelFlagReply(bno, rno) == 1 
 				? new ResponseEntity<String>("ReplyRemoveSuccess", HttpStatus.OK)

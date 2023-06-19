@@ -53,7 +53,7 @@ public class MyBoardController {
 //		model.addAttribute("boardList", myBoardService.getBoardList());
 //	}
 	
-	
+	//@PreAuthorize("permitAll")
 	@GetMapping("/list")
 	public void showBoardList(MyBoardPagingDTO myBoardPaging, Model model) {
 //		model.addAttribute("rowTotal", myBoardService.getRowTotal());

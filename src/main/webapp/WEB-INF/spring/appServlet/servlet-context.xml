@@ -65,11 +65,11 @@
 	</beans:bean>
 	
 	
-	<!-- 스프링 Scheduler 관련 설정(Spring Batch) --> 
+	<!-- 스프링 Scheduler 관련 설정(Spring Batch) --> <!-- 
 	<context:component-scan base-package="com.spring5.mypro00.common.task"/>
 	
 	<task:scheduler id="myClearFilesScheduler" pool-size="10"/>
-	<task:annotation-driven scheduler="myClearFilesScheduler"/>
+	<task:annotation-driven scheduler="myClearFilesScheduler"/> -->
 	
 	
 	<!-- Spring Security 관련 설정-->

@@ -23,7 +23,12 @@
 	
 	<security:http><!-- 
 		<security:csrf disabled="true"/> -->
-		<security:intercept-url pattern="/myboard/list" access="permitAll"/><!-- 
+		
+		<security:intercept-url pattern="/myboard/list" access="permitAll"/>
+		<security:intercept-url pattern="/myboard/detail" access="permitAll"/>
+		
+		
+		<!-- 
 		<security:intercept-url method="GET" pattern="/myboard/register" access="isAuthenticated()"/>
 		<security:intercept-url method="POST" pattern="/myboard/register" access="isAuthenticated()"/> -->
 		

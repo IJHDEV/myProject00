@@ -3,6 +3,7 @@
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 
@@ -65,8 +66,23 @@
 						</div>
 						<div class="col-md-7" style="height: 45px; padding-top:6px;"><%-- vertical-align: middle; --%>
 							<div class="button-group pull-right">
+							<%-- 
+								<sec:authorize access="isAuthenticated()">
+									<sec:authentication property="principal.username" var="principal"/>
+									<c:if test="${username eq board.bwriter }">							
+										<button type="button" id="btnToModify" data-oper="modify"
+												class="btn btn-primary"><span>수정페이지로 이동</span></button>
+									</c:if>
+								</sec:authorize> --%>	
+								
+				<sec:authorize access="isAuthenticated()">
+					<sec:authentication property="principal" var="principal"/>
+						<c:if test="${principal.username eq board.bwriter }">							
 								<button type="button" id="btnToModify" data-oper="modify"
 										class="btn btn-primary"><span>수정페이지로 이동</span></button>
+						</c:if>
+				</sec:authorize>
+										
 								<button type="button" id="btnToList" data-oper="list"
 										class="btn btn-warning"><span>목록페이지로 이동</span></button>
 							</div>
@@ -165,25 +181,35 @@
 							<span id="replyRowTotal"></span>
 							<span id="replyTotal"></span>
 							<span>&nbsp;</span>
+						</strong>
+						
+				<sec:authorize access="isAuthenticated()">							
 							<button type="button" id="btnChgCmtReg" class="btn btn-info btn-sm">댓글 작성</button>
-							<button type="button" id="btnRegCmt" class="btn btn-warning btn-sm"
+							<button type="button" id="btnRegCmt" class="btn btn-primary btn-sm"
 									style="display:none">댓글 등록</button>
 							<button type="button" id="btnCancelRegCmt" class="btn btn-danger btn-sm"
-									style="display:none">취소</button>
-						</strong>
+									style="display:none">취소</button>&nbsp;&nbsp;
+					<strong>
+						<span id="loginUser" style="display:none">
+							<sec:authentication property="principal.username"/>님 작성
+						</span>
+					</strong>
+				</sec:authorize>
 					</p>
 				</div> <%-- /.panel-heading --%>
 				
-				<div class="panel-body">
-				<%-- 댓글 입력창 div 시작 --%>
+				<div class="panel-body"><%-- 댓글 입력창 div 시작 --%>
+				
+				<sec:authorize access="isAuthenticated()">	
 					<div class="form-group" style="margin-bottom: 5px;">
 						<textarea class="form-control txtBoxCmt" name="rcontent"
 								  placeholder="댓글작성을 원하시면,&#10;댓글 작성 버튼을 클릭해주세요."
 								  readonly="readonly"
 								 ></textarea>
 					</div>
-					<hr style="margin-top: 10px; margin-bottom: 10px;">
-					<%-- 댓글 입력창 div 끝 --%>
+					<hr style="margin-top: 10px; margin-bottom: 10px;"><%-- 댓글 입력창 div 끝 --%>
+				</sec:authorize>		
+					
 					
 					<ul class="chat">
 					<%-- 댓글 목록 표시 영역 - JavaScript로 내용이 생성되어 표시됩니다.
@@ -232,6 +258,7 @@
 <script>
 var bnoValue = '<c:out value="${board.bno}"/>';
 var frmSendValue = $("#frmSendValue");
+
 
 //게시물 수정 페이지로 이동
 $("#btnToModify").on("click", function(){
@@ -375,6 +402,22 @@ $("#yourModal").on("click", function(){
 <script type="text/javascript" src="${contextPath }/resources/js/mycomment.js"></script>
 <script>
 //var bnoValue = '<c:out value="${board.bno}"/>';
+
+var csrfHeaderName = "${_csrf.headerName}";
+var csrfToken = "${_csrf.token}";
+
+$(document).ajaxSend(function(e, xhr, options){
+	xhr.setRequestHeader(csrfHeaderName, csrfToken);
+});
+
+
+var loginUser = "";
+
+<sec:authorize access="isAuthenticated()">
+	loginUser = '<sec:authentication property="principal.username"/>';
+</sec:authorize>
+
+
 var commentUL = $(".chat");
 var frmCmtPagingValue = $("#frmCmtPagingValue");
 
@@ -473,11 +516,13 @@ function showCmtList(pageNum) {
 					+ ' 	 	   data-rwriter="' + myReplyPagingCreator.replyList[i].rwriter + '"'			
 					+ '		 	  >' + myReplyPagingCreator.replyList[i].rcontent + '</p>'
 					+ ' 	</div>';
+<sec:authorize access="isAuthenticated()">
 				str +=' 	<div class="btnsReply" style="margin-bottom:10px">'
 					+ ' 		<button type="button" style="display:in-block" '
 					+ ' 				class="btn btn-primary btn-xs btnChgReplyReg">'
 					+ ' 		<span>답글 작성</span></button>'
 					+ '		</div>';	
+</sec:authorize>
 				str +='	</div>'
 					+ '</li>';
 				}
@@ -579,6 +624,7 @@ function chgBeforeCmtBtn(){
 	$("#btnChgCmtReg").attr("style", "display:in-block");
 	$("#btnRegCmt").attr("style", "display:none");
 	$("#btnCancelRegCmt").attr("style", "display:none");
+	$("#loginUser").attr("style", "display:none");
 	$(".txtBoxCmt").val("");
 	$(".txtBoxCmt").attr("readonly", true);
 }
@@ -592,6 +638,7 @@ $("#btnChgCmtReg").on("click", function(){
 	$(this).attr("style", "display:none");
 	$("#btnRegCmt").attr("style", "display:in-block;margin-right:2px;");
 	$("#btnCancelRegCmt").attr("style", "display:in-block;");
+	$("#loginUser").attr("style", "display:in-block;");
 	$(".txtBoxCmt").attr("readonly", false);
 });
 
@@ -607,7 +654,13 @@ $("#btnCancelRegCmt").on("click", function(){
 
 <%-- 댓글 등록 --%>
 $("#btnRegCmt").on("click", function(){
-	var loginUser = "user9";
+	
+	if(!loginUser) {
+		alert("로그인 후, 댓글 등록이 가능합니다.");
+		return;
+	}
+	
+	
 	var txtBoxCmt = $(".txtBoxCmt").val();
 	var comment = {bno: bnoValue, rcontent: txtBoxCmt, rwriter: loginUser};
 	
@@ -669,7 +722,6 @@ $(".chat").on("click", "li .btnCancelRegReply", function(){
 
 <%-- 답글 등록 버튼 클릭--%>
 $(".chat").on("click", "li .btnRegReply", function(){
-	var loginUser = "test8";
 	var txtBoxReply = $(this).prev().val();
 	var prnoVal = $(this).closest("li").data("rno");
 	var reply = {bno: bnoValue, rcontent: txtBoxReply, rwriter: loginUser, prno: prnoVal};
@@ -705,6 +757,19 @@ $(".chat").on("click", "li.commentLi p", function(){
 	chgBeforeReplyBtn();
 	chgBeforeCmtReplyMod();
 	
+	if (!loginUser) {
+		alert("로그인 후 수정이 가능합니다.");
+		return;
+	}
+	
+	var rwriter = $(this).data("rwriter");
+	
+	if (loginUser != rwriter) {
+		alert("작성자만 수정할 수 있습니다.");
+		return;
+	}
+	
+	
 	$(this).parents("li").find(".btnChgReplyReg").attr("style", "display:none;");
 	var rcontent = $(this).text();
 	var strTxtBoxReply =
@@ -730,9 +795,23 @@ $(".chat").on("click", "li.commentLi .btnCancelCmt", function(){
 
 <%-- 댓글-답글 수정 --%>
 $(".chat").on("click", "li.commentLi .btnModCmt", function(){
+	
+	if(!loginUser) {
+		alert("로그인 후, 수정이 가능합니다.");
+		return;
+	}
+	
+	var rwriterVal = $(this).siblings("p").data("rwriter");
+	
+	if (loginUser != rwriterVal) {
+		alert("작성자만 수정 가능합니다.");
+		return;
+	}
+	
+	
 	var rnoVal = $(this).siblings("p").data("rno");
 	var rcontentVal = $(this).prev().val();
-	var rwriterVal = $(this).siblings("p").data("rwriter");
+	
 	
 	var cmtReply = {bno: bnoValue, rno: rnoVal, rcontent: rcontentVal, rwriter: rwriterVal};
 	
@@ -754,12 +833,24 @@ $(".chat").on("click", "li.commentLi .btnModCmt", function(){
 
 <%-- 댓글-답글 삭제 요청 --%>
 $(".chat").on("click", "li.commentLi .btnDelCmt", function(){
+	
+	if(!loginUser) {
+		alert("로그인 후, 삭제할 수 있습니다.");
+		return;
+	}
+	
+	var rwriterVal = $(this).siblings("p").data("rwriter");
+
+	if (loginUser != rwriterVal) {
+		alert("작성자만 삭제할 수 있습니다.");
+		return;
+	}
+	
 	if (!confirm("삭제하시겠습니까?")) {
 		return;
 	}
-	var rnoVal = $(this).closest("li.commentLi").data("rno");
-	var rwriterVal = $(this).siblings("p").data("rwriter");
 	
+	var rnoVal = $(this).closest("li.commentLi").data("rno");
 	var cmtReply = {bno: bnoValue, rno: rnoVal, rwriter: rwriterVal};
 	
 	myCommentClsr.modifyFlagCmtReply(
