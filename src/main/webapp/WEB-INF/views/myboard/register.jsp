@@ -3,6 +3,7 @@
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 
@@ -32,11 +33,17 @@
 					    </div>
 						<div class="form-group">
 						    <label>작성자</label>
-						    <input class="form-control" name="bwriter">
+						    <input class="form-control" name="bwriter" 
+						    	   value='<sec:authentication property="principal.username"/>' 
+						    	   readonly="readonly">
 					    </div>
 					    <button type="button" class="btn btn-primary" id="btnRegister" onclick="sendBoard()">등록</button>
 					    <button type="button" class="btn btn-warning" data-oper="list"
-					    		onclick="location.href='${contextPath}/myboard/list'">취소</button>
+					    		onclick="location.href='${contextPath}/myboard/list'">취소</button><%-- 
+					    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
+					    <sec:csrfInput/>		
+					    
+					    
 					</form><%--
 					<br>
                		<div class="form-group uploadDiv">

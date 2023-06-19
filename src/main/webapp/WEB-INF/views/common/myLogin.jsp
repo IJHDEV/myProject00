@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="checkbox">
                                     <label>
-                                        <input name="remember-me" type="checkbox" >자동로그인(Remember Me)
+                                        <input name="myRememberMe" type="checkbox" >자동로그인(Remember Me)
                                     </label>
                                 </div>
                                 <div>

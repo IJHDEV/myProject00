@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,7 @@ public class MyBoardController {
 	
 	
 //	등록 페이지 호출//	GET /myboard/register//	목록 페이지  등록 페이지로 이동
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
 	public void showBoardRegisterPage() {
 //		System.out.println("등록페이지 호출");
@@ -84,6 +86,7 @@ public class MyBoardController {
 	
 	
 //	등록 처리//	POST /myboard/register//	등록 처리(서버 저장) 후  목록페이지로 이동
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String registerNewBoard(MyBoardVO board, RedirectAttributes rttr) {
 		long bno = myBoardService.registerBoard(board);

@@ -17,14 +17,23 @@
 	<!-- 로그인 성공시의 처리 로직이 정의된 클래스의 빈 등록 -->
 	<bean id="myLoginSuccessHandler" class="com.spring5.mypro00.common.security.MyLoginSuccessHandler2"/>
 	
+	<!-- AccessDeniedHandler 구현클래스 빈 -->
+	<bean id="myAccessDeniedHandler" class="com.spring5.mypro00.common.security.MyAccessDeniedHandler" />
+	
 	
 	<security:http><!-- 
 		<security:csrf disabled="true"/> -->
-		<security:intercept-url pattern="/" access="permitAll"/><!--  
-		<security:intercept-url pattern="/myboard/list" access="hasAnyAuthority('ROLE_MEMBER', 'ROLE_MANAGER', 'ROLE_USER')"/> --> 
+		<security:intercept-url pattern="/myboard/list" access="permitAll"/><!-- 
+		<security:intercept-url method="GET" pattern="/myboard/register" access="isAuthenticated()"/>
+		<security:intercept-url method="POST" pattern="/myboard/register" access="isAuthenticated()"/> -->
+		
+		<!-- 
+		<security:intercept-url pattern="/" access="permitAll"/>  
+		<security:intercept-url pattern="/myboard/list" access="hasAnyAuthority('ROLE_MEMBER', 'ROLE_MANAGER', 'ROLE_USER')"/>  
 		<security:intercept-url pattern="/myboard/list" access="hasAuthority('ROLE_MEMBER')"/> 
 		<security:intercept-url pattern="/myboard/register" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/myboard/modify" access="hasRole('ROLE_ADMIN')"/>
+		<security:intercept-url pattern="/myboard/modify" access="hasRole('ROLE_ADMIN')"/> -->
+		
 		<!-- 
 		<security:form-login login-page="/myLogin" login-processing-url="/myLoginProcess"/> -->
 		<security:form-login login-page="/login" 
@@ -33,6 +42,17 @@
 							 authentication-success-handler-ref="myLoginSuccessHandler"
 							 />
 		<security:logout logout-url="/myLogoutProcess" logout-success-url="/"/>
+		
+		<!-- 스프링 시큐리티 자동 로그인: 1주일 유지 -->
+		<!-- Referenced bean 'dataSource' not found 경고는 무시  -->
+		<security:remember-me data-source-ref="dataSource"
+							  remember-me-parameter="myRememberMe"
+							  token-validity-seconds="604800"/>
+		<!-- 					  
+		<security:access-denied-handler error-page="/accessForbiddenError"/> -->
+		<security:access-denied-handler ref="myAccessDeniedHandler"/>
+							  
+							  
 	</security:http>
 	
 	<security:authentication-manager>
