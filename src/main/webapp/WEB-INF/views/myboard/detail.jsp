@@ -189,12 +189,13 @@
 									style="display:none">댓글 등록</button>
 							<button type="button" id="btnCancelRegCmt" class="btn btn-danger btn-sm"
 									style="display:none">취소</button>&nbsp;&nbsp;
-					<strong>
+					<strong style="padding-top: 2px;">
 						<span id="loginUser" style="display:none">
 							<sec:authentication property="principal.username"/>님 작성
 						</span>
 					</strong>
 				</sec:authorize>
+				
 					</p>
 				</div> <%-- /.panel-heading --%>
 				

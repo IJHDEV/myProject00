@@ -90,11 +90,11 @@
 					</a>
 					<ul class="dropdown-menu"><%-- 클래스 이름 중 dropdown-user 삭제 --%>
 						<li><a id="myLogin" href="${contextPath}/login">
-								<i class="fa fa-sign-in fa-fw"></i> Sign in</a><%-- a 링크 수정, Sign in 으로 수정 --%>
+							<i class="fa fa-sign-in fa-fw"></i> Sign in</a><%-- a 링크 수정, Sign in 으로 수정 --%>
 						</li>
 						<li class="divider"></li>
 						<li><a id="myLogout" href="${contextPath}/myLogout">
-								<i class="fa fa-sign-out fa-fw"></i> Sign out</a><%--a 링크 수정, Sign out 으로 수정 --%>
+							<i class="fa fa-sign-out fa-fw"></i> Sign out</a><%--a 링크 수정, Sign out 으로 수정 --%>
 						</li>
 					</ul><!-- /.dropdown-user -->
                 </li>
