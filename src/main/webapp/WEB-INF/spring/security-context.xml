@@ -17,6 +17,7 @@
 	<!-- 로그인 성공시의 처리 로직이 정의된 클래스의 빈 등록 -->
 	<bean id="myLoginSuccessHandler" class="com.spring5.mypro00.common.security.MyLoginSuccessHandler2"/>
 	
+	
 	<!-- AccessDeniedHandler 구현클래스 빈 -->
 	<bean id="myAccessDeniedHandler" class="com.spring5.mypro00.common.security.MyAccessDeniedHandler" />
 	

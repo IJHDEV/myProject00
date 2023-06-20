@@ -35,6 +35,7 @@ var myCommentClsr = (function(){
 			url: "/mypro00/replies/" + bno + "/new",
 			data: JSON.stringify(comment),
 			contentType: "application/json; charset=utf-8",
+			dataType: "text",
 			success: function(result, status, xhr){
 				if(callback) {
 					callback(result);
@@ -58,6 +59,7 @@ var myCommentClsr = (function(){
 			url: "/mypro00/replies/" + bno + "/" + prno + "/new",
 			data: JSON.stringify(reply),
 			contentType: "application/json; charset=utf-8",
+			dataType: "text",
 			success: function(result, status, xhr){
 				if(callback) {
 					callback(result);
@@ -147,7 +149,8 @@ var myCommentClsr = (function(){
  		$.ajax({
  			type: "patch",
  			url: "/mypro00/replies/" + bno + "/" + rno,
- 			data: JSON.stringify({rwriter: cmtReply.rwriter}),
+// 			data: JSON.stringify({rwriter: cmtReply.rwriter}),
+ 			data: JSON.stringify(cmtReply),
 			contentType: "application/json; charset=utf-8",
  			dataType: "text",
  			success: function(result, status, xhr){

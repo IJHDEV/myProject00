@@ -39,20 +39,11 @@
 					    </div>
 					    <button type="button" class="btn btn-primary" id="btnRegister" onclick="sendBoard()">등록</button>
 					    <button type="button" class="btn btn-warning" data-oper="list"
-					    		onclick="location.href='${contextPath}/myboard/list'">취소</button><%-- 
-					    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
-					    <sec:csrfInput/>		
+					    		onclick="location.href='${contextPath}/myboard/list'">취소</button>
+					    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"><%-- 
+					    <sec:csrfInput/> --%>		
 					    
-					    
-					</form><%--
-					<br>
-               		<div class="form-group uploadDiv">
-               			<label>파일 첨부</label>
-               			<input class="btn btn-primary inputFile" type="file" name="uploadFiles" multiple="multiple" /><br>
-					</div>
-					<div class="form-group fileUploadResult">
-						<ul></ul>
-					</div> --%>
+					</form>
 					 
                 </div><%-- /.panel-body --%>
             </div><%-- /.panel --%>

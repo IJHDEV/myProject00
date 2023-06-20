@@ -759,14 +759,14 @@ $(".chat").on("click", "li.commentLi p", function(){
 	chgBeforeCmtReplyMod();
 	
 	if (!loginUser) {
-		alert("로그인 후 수정이 가능합니다.");
+		//alert("로그인 후 수정이 가능합니다.");
 		return;
 	}
 	
 	var rwriter = $(this).data("rwriter");
 	
 	if (loginUser != rwriter) {
-		alert("작성자만 수정할 수 있습니다.");
+		//alert("작성자만 수정할 수 있습니다.");
 		return;
 	}
 	
@@ -820,7 +820,7 @@ $(".chat").on("click", "li.commentLi .btnModCmt", function(){
 		cmtReply,
 		function(result){
 			if(result == "ReplyModifySuccess") {
-				alert("수정되었습니다.");
+				//alert("수정되었습니다.");
 				showCmtList(frmCmtPagingValue.find("input[name='pageNum']").val());
 			} else {
 				alert("죄송합니다. 서버 장애로 댓글 수정이 취소되었습니다.");
@@ -843,7 +843,7 @@ $(".chat").on("click", "li.commentLi .btnDelCmt", function(){
 	var rwriterVal = $(this).siblings("p").data("rwriter");
 
 	if (loginUser != rwriterVal) {
-		alert("작성자만 삭제할 수 있습니다.");
+		//alert("작성자만 삭제할 수 있습니다.");
 		return;
 	}
 	
