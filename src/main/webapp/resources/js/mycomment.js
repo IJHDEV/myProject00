@@ -147,8 +147,8 @@ var myCommentClsr = (function(){
  		var rno = cmtReply.rno;
  		
  		$.ajax({
- 			type: "patch",
- 			url: "/mypro00/replies/" + bno + "/" + rno,
+ 			type: "put",
+ 			url: "/mypro00/replies/" + bno + "/" + rno + "/d",
 // 			data: JSON.stringify({rwriter: cmtReply.rwriter}),
  			data: JSON.stringify(cmtReply),
 			contentType: "application/json; charset=utf-8",

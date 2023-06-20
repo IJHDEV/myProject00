@@ -56,6 +56,7 @@
 						<input type='hidden' name='keyword' value='${myBoardPaging.keyword}'>
 						<input type="hidden" name="startDate" value="${myBoardPaging.startDate }">
 	               		<input type="hidden" name="endDate" value="${myBoardPaging.endDate }">
+	               		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 					</form>
 						                
                 </div><%-- /.panel-body --%>
@@ -87,6 +88,9 @@
 </div><%-- /#page-wrapper --%>
 
 <script>
+
+
+
 
 var frmModify = $("#frmModify");
 
@@ -201,6 +205,14 @@ function showUploadResult(uploadResult) {
 } // showUploadResult-end
 
 
+//var csrfHeaderName = "${_csrf.headerName}";
+//var csrfToken = "${_csrf.token}";
+
+//$(document).ajaxSend(function(e, xhr, options){
+//	xhr.setRequestHeader(csrfHeaderName, csrfToken);
+//});
+
+
 function getAttachFileInfo() {
 	$.ajax({
 		type: "get",
@@ -266,6 +278,9 @@ $(".uploadDiv").on("change", ".inputFile", function(){
 		contentType: false, //contentType에 MIME type 지정하지 않음	
 		processData: false, //contentType에 설정된 형식으로 인코딩 처리하지 않음
 		dataType: "json",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+		},
 		success: function(uploadResult){
 			console.log(uploadResult);
 			$(".uploadDiv").html(cloneFileInput.html());

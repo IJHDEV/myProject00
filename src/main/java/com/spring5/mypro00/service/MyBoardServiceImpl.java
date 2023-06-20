@@ -107,7 +107,8 @@ public class MyBoardServiceImpl implements MyBoardService{
 		
 		boolean boardModifyResult = myBoardMapper.updateMyBoard(board) == 1;
 		
-		if(boardModifyResult && board.getAttachFileList().size() > 0) {
+		
+		if(boardModifyResult && board.getAttachFileList() != null) {
 			
 			board.getAttachFileList().forEach(attachFile -> {
 					attachFile.setBno(bno);

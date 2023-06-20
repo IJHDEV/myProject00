@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -116,7 +117,8 @@ public class MyReplyController {
 	
 	//게시물의 특정 댓글 삭제 요청
 	@PreAuthorize("isAuthenticated() && principal.username == #myReply.rwriter")
-	@PatchMapping(value = "/{bno}/{rno}",
+//	@PatchMapping(value = "/{bno}/{rno}",
+	@PutMapping(value = "/{bno}/{rno}/d",
 				  consumes = "application/json; charset=utf-8",
 				  produces = "text/plain; charset=utf-8")
 	public ResponseEntity<String> modifyRdelFlagReply(@PathVariable("bno") Long bno, 

@@ -3,6 +3,7 @@
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 
@@ -86,16 +87,27 @@
                 <li class="dropdown">
                 	<a class="dropdown-toggle" data-toggle="dropdown"><%-- href 속성 삭제 --%>
 						<i class="fa fa-user fa-fw"></i>
+<sec:authorize access="isAuthenticated()">
+						<span><sec:authentication property="principal.username"/> 님 접속</span>
+</sec:authorize>
+<sec:authorize access="isAnonymous()">
+						<span>로그인 하세요</span>
+</sec:authorize>
 						<i class="fa fa-caret-down"></i>
 					</a>
 					<ul class="dropdown-menu"><%-- 클래스 이름 중 dropdown-user 삭제 --%>
+						
+<sec:authorize access="isAnonymous()">
 						<li><a id="myLogin" href="${contextPath}/login">
 							<i class="fa fa-sign-in fa-fw"></i> Sign in</a><%-- a 링크 수정, Sign in 으로 수정 --%>
 						</li>
-						<li class="divider"></li>
+</sec:authorize><%-- 						
+						<li class="divider"></li> --%>
+<sec:authorize access="isAuthenticated()">
 						<li><a id="myLogout" href="${contextPath}/myLogout">
 							<i class="fa fa-sign-out fa-fw"></i> Sign out</a><%--a 링크 수정, Sign out 으로 수정 --%>
 						</li>
+</sec:authorize>
 					</ul><!-- /.dropdown-user -->
                 </li>
                 <!-- /.dropdown -->
@@ -114,12 +126,16 @@
                         <li>
                             <a href="${contextPath }/myboard/register"><i class="fa fa-edit fa-fw"></i> New Board Register</a>
                         </li>
+<sec:authorize access="isAnonymous()">
                         <li>
                             <a href="${contextPath }/login"><i class="fa fa-sign-in fa-fw"></i> Sign in</a>
                         </li>
+</sec:authorize> 
+<sec:authorize access="isAuthenticated()">
                         <li>
                             <a href="${contextPath }/myLogout"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
                         </li>
+</sec:authorize>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

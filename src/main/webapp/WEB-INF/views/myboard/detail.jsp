@@ -357,6 +357,7 @@ function showUploadResult(uploadResult) {
 } // showUploadResult-end
 
 
+
 function getAttachFileInfo() {
 	$.ajax({
 		type: "get",
@@ -364,19 +365,24 @@ function getAttachFileInfo() {
 		url: "${contextPath}/myboard/getFiles",
 		dataType: "json",
 		success: function(uploadResult) { //첨부파일 목록
-			showUploadResult(uploadResult);
+				showUploadResult(uploadResult);
+		
 		}
+		
 	});
 }
 
+
 //첨부파일 모달 표시
 $(".fileUploadResult ul").on("click", "li", function(){
+	
 	var objLi = $(this);
 	
 	var fullFileName = encodeURI(objLi.data("repopath") + "/" 
 							   + objLi.data("uploadpath") + "/" 
 							   + objLi.data("uuid") + "_" 
 							   + objLi.data("filename"));
+	
 	
 	if(objLi.data("filetype") == "I") {
 		
@@ -389,7 +395,8 @@ $(".fileUploadResult ul").on("click", "li", function(){
 		
 	} else {
 		self.location.href = "${contextPath}/fileDownloadAjax?fileName=" + fullFileName;	
-	}
+	} 
+	
 });
 
 
@@ -410,6 +417,7 @@ var csrfToken = "${_csrf.token}";
 $(document).ajaxSend(function(e, xhr, options){
 	xhr.setRequestHeader(csrfHeaderName, csrfToken);
 });
+
 
 
 var loginUser = "";
@@ -759,14 +767,14 @@ $(".chat").on("click", "li.commentLi p", function(){
 	chgBeforeCmtReplyMod();
 	
 	if (!loginUser) {
-		//alert("로그인 후 수정이 가능합니다.");
+//		alert("로그인 후 수정이 가능합니다.");
 		return;
 	}
 	
 	var rwriter = $(this).data("rwriter");
 	
 	if (loginUser != rwriter) {
-		//alert("작성자만 수정할 수 있습니다.");
+//		alert("작성자만 수정할 수 있습니다.");
 		return;
 	}
 	
@@ -798,14 +806,14 @@ $(".chat").on("click", "li.commentLi .btnCancelCmt", function(){
 $(".chat").on("click", "li.commentLi .btnModCmt", function(){
 	
 	if(!loginUser) {
-		alert("로그인 후, 수정이 가능합니다.");
+//		alert("로그인 후, 수정이 가능합니다.");
 		return;
 	}
 	
 	var rwriterVal = $(this).siblings("p").data("rwriter");
 	
 	if (loginUser != rwriterVal) {
-		alert("작성자만 수정 가능합니다.");
+//		alert("작성자만 수정 가능합니다.");
 		return;
 	}
 	
@@ -825,6 +833,10 @@ $(".chat").on("click", "li.commentLi .btnModCmt", function(){
 			} else {
 				alert("죄송합니다. 서버 장애로 댓글 수정이 취소되었습니다.");
 			}
+		},
+		
+		function(err) {
+			alert("작성자만 수정 가능합니다.");
 		}
 	);
 });
