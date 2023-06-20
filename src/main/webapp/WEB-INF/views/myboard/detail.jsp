@@ -374,31 +374,37 @@ function getAttachFileInfo() {
 
 
 //첨부파일 모달 표시
-$(".fileUploadResult ul").on("click", "li", function(){
+if ($(".fileUploadResult ul li").length){
 	
-	var objLi = $(this);
-	
-	var fullFileName = encodeURI(objLi.data("repopath") + "/" 
-							   + objLi.data("uploadpath") + "/" 
-							   + objLi.data("uuid") + "_" 
-							   + objLi.data("filename"));
-	
-	
-	if(objLi.data("filetype") == "I") {
-		
-		$(".modal-content")
-		.html("<img src='${contextPath}/fileDownloadAjax?fileName=" 
-			+ 		fullFileName + "'" 
-			+ " 	width='100%' >");
-		
-		$("#yourModal").modal("show");
-		
-	} else {
-		self.location.href = "${contextPath}/fileDownloadAjax?fileName=" + fullFileName;	
-	} 
-	
-});
 
+//$(".fileUploadResult ul").on("click", "li", function(){
+	$(this).on("click", function(){
+		
+		var objLi = $(this);
+		
+		
+		
+		var fullFileName = encodeURI(objLi.data("repopath") + "/" 
+								   + objLi.data("uploadpath") + "/" 
+								   + objLi.data("uuid") + "_" 
+								   + objLi.data("filename"));
+		
+		if (objLi.data("filetype") == "I") {
+			
+			$(".modal-content")
+			.html("<img src='${contextPath}/fileDownloadAjax?fileName=" 
+				+ 		fullFileName + "'" 
+				+ " 	width='100%' >");
+			
+			$("#yourModal").modal("show");
+			
+		} else {
+			self.location.href = "${contextPath}/fileDownloadAjax?fileName=" + fullFileName;	
+		} 
+		
+	});
+
+} 
 
 //이미지 표시 모달 감추기
 $("#yourModal").on("click", function(){
