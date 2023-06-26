@@ -1,5 +1,8 @@
 package com.spring5.mypro00.test02_mapper;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,10 +10,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.spring5.mypro00.domain.MyMemberVO;
 import com.spring5.mypro00.mapper.MyMemberMapper;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration      //폴더 구분자로 \\ 사용 시 오류 발생. /를 사용하세요.
@@ -18,7 +23,7 @@ import lombok.Setter;
                        "file:src/main/webapp/WEB-INF/spring/security-context.xml" ,
                        "file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
 @NoArgsConstructor
-//@Log4j
+@Log4j
 public class MyMemberMapperTests {
 
     //사용자 패스워드 암호화 

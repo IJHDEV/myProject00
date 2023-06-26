@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 public class ApiTest {
 
@@ -17,29 +17,44 @@ public class ApiTest {
 		String result = "";
 		
 		try{
-			URL url = new URL("https://api.odcloud.kr/api/15043890/v1/uddi:9840de90-5907-49bd-94ed-acd173ea9ae1?page=1&perPage=10&serviceKey=" + key);
+			URL url = new URL("https://apis.data.go.kr/1613000/DmstcFlightNvgInfoService/getFlightOpratInfoList?serviceKey=" + key + "&pageNo=1&numOfRows=10&_type=json&depAirportId=NAARKJJ&arrAirportId=NAARKPC&depPlandTime=20230628&airlineId=AAR");
 			BufferedReader bf;
 			
 			bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			
 			result = bf.readLine();
-			System.out.println(result);
+			System.out.println("result: " + result);
 			
-			JSONParser jsonParser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+			JSONObject jsonObject = new JSONObject(result);
+			JSONObject response = jsonObject.getJSONObject("response");
+			JSONObject body = response.getJSONObject("body");
+			JSONObject items = body.getJSONObject("items");
+			JSONArray item = items.getJSONArray("item");
 			
-			JSONArray airRoutes = (JSONArray) jsonObject.get("data");
 			
-			String val = "";
-			
-			for (int i = 0; i < airRoutes.size(); i++) {
-				JSONObject valNm = (JSONObject) airRoutes.get(i);
-				val += valNm.get("기종") + " ";
+			for (int i = 0; i < item.length(); i++) {
+				JSONObject airRoute = item.getJSONObject(i);
+				String airlineNm = airRoute.getString("airlineNm");
+				String arrAirportNm = airRoute.getString("arrAirportNm");
+				long arrPlandTime = airRoute.getLong("arrPlandTime");
+				String depAirportNm = airRoute.getString("depAirportNm");
+				long depPlandTime = airRoute.getLong("depPlandTime");
+				int economyCharge = airRoute.getInt("economyCharge");
+				int prestigeCharge = airRoute.getInt("prestigeCharge");
+				String vihicleId = airRoute.getString("vihicleId");
+				
+				System.out.println();
+				System.out.println("airlineNm: " + airlineNm);
+				System.out.println("arrAirportNm: " + arrAirportNm);
+				System.out.println("arrPlandTime: " + arrPlandTime);
+				System.out.println("depAirportNm: " + depAirportNm);
+				System.out.println("depPlandTime: " + depPlandTime);
+				System.out.println("economyCharge: " + economyCharge);
+				System.out.println("prestigeCharge: " + prestigeCharge);
+				System.out.println("vihicleId: " + vihicleId);
+				System.out.println("====================================");
+				
 			}
-			
-			System.out.println("기종: " + val );
-			
-			
 			
 			
 		}catch(Exception e){

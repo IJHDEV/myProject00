@@ -15,6 +15,15 @@
 	</properties>
 	<dependencies>
 		
+		
+			
+		<!-- 새로 추가: json-simple -->
+		<!-- <dependency>
+		    <groupId>com.googlecode.json-simple</groupId>
+		    <artifactId>json-simple</artifactId>
+		    <version>1.1.1</version>
+		</dependency> -->
+				
 		<!-- 새로 추가: spring-security-core -->
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
